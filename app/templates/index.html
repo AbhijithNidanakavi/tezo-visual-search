@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Visual Search</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
+</head>
+<body>
+    <main class="shell">
+        <section class="hero">
+            <p class="eyebrow">Tezo Case Study</p>
+            <h1>Enterprise Visual Search</h1>
+            <p class="lede">Search image libraries with natural language and get concise AI explanations for every result.</p>
+            <form method="get" action="/" class="search-form">
+                <input type="text" name="query" value="{{ query }}" placeholder="Search for beach sunset, office team, luxury product..." aria-label="Search query">
+                <button type="submit">Search</button>
+            </form>
+            {% if not index_ready %}
+            <p class="notice">The index is not built yet. Run <code>scripts/build_index.py</code> after downloading images.</p>
+            {% endif %}
+            {% if error %}
+            <p class="error">{{ error }}</p>
+            {% endif %}
+        </section>
+
+        {% if response %}
+        <section class="results-meta">
+            <p><strong>{{ response.results|length }}</strong> results for "<strong>{{ response.query }}</strong>" in {{ response.took_ms }} ms.</p>
+        </section>
+        <section class="results-grid">
+            {% for result in response.results %}
+            <article class="card">
+                <img src="/{{ result.image_path }}" alt="Search result image">
+                <div class="card-body">
+                    <div class="score-row">
+                        <span class="score">Score {{ "%.2f"|format(result.score) }}</span>
+                        <span class="pill">{{ result.labels[0] if result.labels else 'visual match' }}</span>
+                    </div>
+                    <p>{{ result.explanation }}</p>
+                    <p class="meta">Labels: {{ result.labels|join(', ') }}</p>
+                    <p class="meta">Colors: {{ result.dominant_colors|join(', ') }}</p>
+                </div>
+            </article>
+            {% endfor %}
+        </section>
+        {% endif %}
+    </main>
+</body>
+</html>

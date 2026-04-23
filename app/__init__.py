@@ -1,0 +1,1 @@
+"""Visual search application package."""

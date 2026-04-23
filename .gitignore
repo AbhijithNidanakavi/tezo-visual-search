@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.tmp_pytest/
+.test_runtime/
+pytest-cache-files-*/
+*.pyc
+data/images/
+data/indexes/
