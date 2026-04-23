@@ -56,6 +56,21 @@ For a faster smoke run:
 .venv\Scripts\python.exe -m uvicorn app.main:app --reload
 ```
 
+Or use the one-command launcher:
+
+```powershell
+.\run.ps1
+```
+
+Useful options:
+
+```powershell
+.\run.ps1 -RebuildIndex
+.\run.ps1 -RebuildIndex -IndexLimit 200
+.\run.ps1 -SkipInstall
+.\run.ps1 -UseReload
+```
+
 Endpoints:
 
 - `GET /health`

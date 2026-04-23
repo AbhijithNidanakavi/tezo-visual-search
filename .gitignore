@@ -5,5 +5,7 @@ __pycache__/
 .test_runtime/
 pytest-cache-files-*/
 *.pyc
+uvicorn.out.log
+uvicorn.err.log
 data/images/
 data/indexes/
