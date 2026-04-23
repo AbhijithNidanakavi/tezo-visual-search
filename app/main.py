@@ -72,5 +72,6 @@ def home(request: Request, query: str | None = None) -> HTMLResponse:
             "response": response,
             "error": error,
             "index_ready": engine.is_ready,
+            "indexed_images": len(engine.records),
         },
     )

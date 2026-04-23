@@ -89,6 +89,30 @@ docker compose up --build
 .venv\Scripts\python.exe -m pytest -q
 ```
 
+## Validation snapshot
+
+The project has been validated locally on a larger intermediate corpus of `1349` downloaded images from the provided `photos_url.csv`.
+
+- automated tests: `6 passed`
+- API health check: `index_ready: true`, `indexed_images: 1349`
+- real query smoke tests validated on:
+  - `restaurant`
+  - `street`
+  - `city`
+  - `dog`
+  - `forest`
+  - `car`
+  - `office`
+- first-query warmup latency observed around `3.3s`
+- steady-state search latency observed around `17–18 ms` on the `1349`-image index
+
+Important note:
+
+- `data/images` and `data/indexes` are local runtime artifacts and are intentionally not committed to Git
+- after rebuilding the index, restart the FastAPI server so it loads the latest on-disk embeddings
+
+The UI also shows the currently loaded indexed image count so you can verify the runtime state immediately.
+
 ## Edge cases covered
 
 - empty query rejection
