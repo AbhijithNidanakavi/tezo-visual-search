@@ -15,6 +15,10 @@
             <div class="status-row">
                 <span class="status-pill">{{ indexed_images }} indexed images</span>
                 <span class="status-pill">{{ 'index ready' if index_ready else 'index missing' }}</span>
+                <span class="status-pill">{{ embedder_backend }} backend</span>
+                {% if index_image_count is not none %}
+                <span class="status-pill">{{ index_image_count }} images on disk</span>
+                {% endif %}
             </div>
             <form method="get" action="/" class="search-form">
                 <input type="text" name="query" value="{{ query }}" placeholder="Search for beach sunset, office team, luxury product..." aria-label="Search query">

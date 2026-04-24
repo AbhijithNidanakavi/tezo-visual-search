@@ -23,12 +23,32 @@ class SearchEngine:
         self.embeddings: np.ndarray | None = None
         self.records: list[IndexedRecord] = []
         self.config: dict[str, str | int] = {}
+        self._store_signature: tuple[int | None, int | None, int | None] = self._current_store_signature()
 
         if self.store.exists():
             self.load()
 
     def load(self) -> None:
         self.embeddings, self.records, self.config = self.store.load()
+        self._store_signature = self._current_store_signature()
+
+    def _current_store_signature(self) -> tuple[int | None, int | None, int | None]:
+        paths = (self.store.embeddings_path, self.store.metadata_path, self.store.config_path)
+        return tuple(path.stat().st_mtime_ns if path.exists() else None for path in paths)
+
+    def refresh_if_stale(self) -> bool:
+        current_signature = self._current_store_signature()
+        if current_signature == self._store_signature:
+            return False
+
+        if self.store.exists():
+            self.load()
+        else:
+            self.embeddings = None
+            self.records = []
+            self.config = {}
+            self._store_signature = current_signature
+        return True
 
     @property
     def embedder(self) -> BaseEmbedder:

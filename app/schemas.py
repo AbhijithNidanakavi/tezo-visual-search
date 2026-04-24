@@ -25,3 +25,4 @@ class HealthResponse(BaseModel):
     index_ready: bool
     indexed_images: int
     embedder_backend: str
+    index_image_count: int | None = None

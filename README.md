@@ -93,7 +93,7 @@ docker compose up --build
 
 The project has been validated locally on a larger intermediate corpus of `1349` downloaded images from the provided `photos_url.csv`.
 
-- automated tests: `6 passed`
+- automated tests: `8 passed`
 - API health check: `index_ready: true`, `indexed_images: 1349`
 - real query smoke tests validated on:
   - `restaurant`
@@ -109,7 +109,7 @@ The project has been validated locally on a larger intermediate corpus of `1349`
 Important note:
 
 - `data/images` and `data/indexes` are local runtime artifacts and are intentionally not committed to Git
-- after rebuilding the index, restart the FastAPI server so it loads the latest on-disk embeddings
+- the app reflects rebuilt or deleted on-disk index files without requiring a FastAPI restart
 
 The UI also shows the currently loaded indexed image count so you can verify the runtime state immediately.
 

@@ -35,18 +35,25 @@ app.mount("/data", StaticFiles(directory=str(settings.data_dir)), name="data")
 templates = Jinja2Templates(directory=str(Path(__file__).resolve().parent / "templates"))
 
 
+def sync_engine_state() -> None:
+    engine.refresh_if_stale()
+
+
 @app.get("/health", response_model=HealthResponse)
 def health() -> HealthResponse:
+    sync_engine_state()
     return HealthResponse(
         status="ok",
         index_ready=engine.is_ready,
         indexed_images=len(engine.records),
         embedder_backend=engine._embedder.name if engine._embedder is not None else engine.settings.embedder_backend,
+        index_image_count=engine.config.get("image_count") if engine.config else None,
     )
 
 
 @app.get("/search", response_model=SearchResponse)
 def search(query: str = Query(..., min_length=1), top_k: int = Query(default=settings.default_top_k, ge=1, le=20)) -> SearchResponse:
+    sync_engine_state()
     try:
         return engine.search(query, top_k=top_k)
     except ValueError as exc:
@@ -57,6 +64,7 @@ def search(query: str = Query(..., min_length=1), top_k: int = Query(default=set
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request, query: str | None = None) -> HTMLResponse:
+    sync_engine_state()
     response = None
     error = None
     if query:
@@ -73,5 +81,7 @@ def home(request: Request, query: str | None = None) -> HTMLResponse:
             "error": error,
             "index_ready": engine.is_ready,
             "indexed_images": len(engine.records),
+            "index_image_count": engine.config.get("image_count") if engine.config else None,
+            "embedder_backend": engine.config.get("embedder_backend", engine.settings.embedder_backend),
         },
     )
